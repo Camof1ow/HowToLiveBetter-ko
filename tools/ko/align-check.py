@@ -1,5 +1,5 @@
 import subprocess, re, json, os, sys
-os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 CHAPS = ["01-不要早死","02-不要慢慢死","03-不要浪费精力","04-不要浪费时间",
          "13-紧急情况","14-账号与信息安全","20-刚出生的孩子怎么带","22-怎么放松",
          "28-别为了外形把身体搞坏","30-上学以后的孩子","34-家里的常备药别吃出事"]

@@ -1,5 +1,5 @@
 import re, sys, os, json
-os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 TAG = re.compile(r"^\x3c!-- 成本标签:.*?--\>", re.M)
 ENTRY = re.compile(r"^### (\d+)\. (.+)$", re.M)
 URL = re.compile(r"https?://[^\s)>\]\"，。;、（）(]+")
