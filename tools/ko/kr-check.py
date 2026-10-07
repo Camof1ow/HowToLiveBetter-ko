@@ -40,9 +40,20 @@ def check(orig_path, kr_path):
             viol.append(n)
     resolved = [n for n in set(oc) if oc[n] and not kc.get(n, True)]
     if viol: iss.append(f"URL diff outside [C]-resolved: {viol[:6]}")
-    won_r = len(re.findall(r"^- (?:비용|쉬운 말)[:：].*위안", k, re.M))
+    # 라벨 무결성 하드체크: 항목마다 6라벨 전부 존재 + 등급 문자 파싱 (손상/융합 줄 차단)
+    pos = [m.start() for m in ENTRY.finditer(k)] + [len(k)]
+    bad = []
+    for i in range(len(pos) - 1):
+        seg = k[pos[i]:pos[i+1]]
+        head = ENTRY.findall(k)[i] if i < len(ENTRY.findall(k)) else ("?", "")
+        labs = set(re.findall(r"^- (비용|쉬운 말|혜택|증거 등급|출처|비고)[:：]", seg, re.M))
+        missing = {"비용","쉬운 말","혜택","증거 등급","출처","비고"} - labs
+        if missing or not re.search(r"^- 증거 등급[:：]\s*[ABC]", seg, re.M):
+            bad.append((head[0], sorted(missing) or "grade"))
+    if bad: iss.append(f"LABEL INTEGRITY {bad[:4]}")
+    won_r = len(re.findall(r"^- (?:비용|쉬운 말)[:：](?!.*환산).*위안", k, re.M))
     if won_r: iss.append(f"위안 in reader fields={won_r}")
-    won_c = len(re.findall(r"^- (?:혜택|비고)[:：].*위안", k, re.M))
+    won_c = len(re.findall(r"^- (?:혜택|비고)[:：](?!.*환산).*위안", k, re.M))
     cn = len(re.findall(r"^- (?:비용|쉬운 말)[:：](?!.*중국).*중국", k, re.M))
     return {"file": kr_path, "issues": iss, "c_resolved": len(resolved),
             "won_in_cited_lines": won_c, "bare_china_reader_fields": cn, "entries": len(entries(k))}
