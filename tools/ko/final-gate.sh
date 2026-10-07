@@ -1,10 +1,10 @@
 #!/bin/bash
 set -uo pipefail
-cd "C:/Users/astk1/IdeaProjects/HowToLiveBetter-ko" || { echo "FATAL: cd 실패 — Git Bash로 실행 중인가?" >&2; exit 1; }
+cd "/c/Users/astk1/IdeaProjects/HowToLiveBetter-ko" || { echo "FATAL: cd 실패 — Git Bash로 실행 중인가?" >&2; exit 1; }
 n=$(ls book/*.md 2>/dev/null | wc -l)
 [ "$n" -eq 11 ] || { echo "FATAL: book/*.md = $n (11 기대) — 게이트 무효" >&2; exit 1; }
-PY=(process.env.PY||"python")
-[ -x "$PY" ] || { echo "FATAL: python 없음" >&2; exit 1; }
+PY="${PY:-python}"
+command -v "$PY" >/dev/null || { echo "FATAL: python 없음 (PY 변수로 지정 가능)" >&2; exit 1; }
 
 XRE="제(5|6|7|8|9|10|11|12|15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)절 [0-9]+항"
 echo "== dangling 잔존 ('제N절 M항' 형태, 미수록 절만; 0 = PASS)"
@@ -27,7 +27,7 @@ echo "$PT"
 S=$(echo "$PT" | grep -c "^SEAM links==disk: true")
 
 echo "== URL·구분자 렌더 검사 (한글 URL 미인코딩 / 출처 구분자 — 각 hit 수동 확인)"
-grep -nP 'https?://[^\s)"]*[\x{AC00}-\x{D7A3}]' book/*.md || true
+grep -nP 'https?://[^\s<>"()]*[\x{AC00}-\x{D7A3}]' book/*.md || true
 grep -nP '^- 출처:.*[가-힣];' book/*.md | grep -v '；' || true
 
 echo "== align-check (11 OK 기대)"
