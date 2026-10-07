@@ -1,6 +1,6 @@
 #!/bin/bash
 set -uo pipefail
-cd /c/Users/astk1/IdeaProjects/HowToLiveBetter-ko || { echo "FATAL: cd 실패 — Git Bash로 실행 중인가?" >&2; exit 1; }
+cd "C:/Users/astk1/IdeaProjects/HowToLiveBetter-ko" || { echo "FATAL: cd 실패 — Git Bash로 실행 중인가?" >&2; exit 1; }
 n=$(ls book/*.md 2>/dev/null | wc -l)
 [ "$n" -eq 11 ] || { echo "FATAL: book/*.md = $n (11 기대) — 게이트 무효" >&2; exit 1; }
 PY=(process.env.PY||"python")
