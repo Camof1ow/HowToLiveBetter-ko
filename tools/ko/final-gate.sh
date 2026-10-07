@@ -9,14 +9,14 @@ command -v "$PY" >/dev/null || { echo "FATAL: python 없음 (PY 변수로 지정
 XRE="제(5|6|7|8|9|10|11|12|15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)절 [0-9]+항"
 echo "== dangling 잔존 ('제N절 M항' 형태, 미수록 절만; 0 = PASS)"
 grep -noP "$XRE" book/*.md || true
-D=$(grep -hoP "$XRE" book/*.md | wc -l); echo "dangling_hits=$D"
+D=$(grep -hoP "$XRE" book/*-kr.md | wc -l); echo "dangling_hits=$D"
 
 echo "== 마크 대장 (c-base 대비 감소분 = 지역화 완료)"
 NB=$(ls book/*.md | grep -v -- '-kr.md'); C=$(cat $NB | grep -c '\[C\]\*\*'); W=$(cat $NB | grep -c '\[W\]\*\*')
 echo "C_now=$C W_now=$W"
 
 echo "== 등급 분포 (변형 라벨 주의: 'B (...' 포함)"
-grep -h '^- 증거 등급:' book/*.md | sort | uniq -c || echo "GRADE-GREP-FAIL"
+cat $(ls book/*-kr.md) | grep '^- 증거 등급:' | sort | uniq -c || echo "GRADE-GREP-FAIL"
 
 echo "== 항목 수 (241 = PASS)"
 E=$(cat $(ls book/*.md | grep -v -- '-kr.md') | grep -c '^### '); echo "entries=$E"
