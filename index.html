@@ -1011,7 +1011,7 @@ function build(sections){
 function buildGlossary(){
   const box = document.getElementById('gloss'); if (!GLOSS.length) { box.hidden = true; return; }
   const dl = box.querySelector('dl');
-  for (const g of [...GLOSS].sort((a,b) => a.term.localeCompare(b.term, 'zh'))){
+  for (const g of [...GLOSS].sort((a,b) => a.term.localeCompare(b.term, 'ko'))){
     const dt = document.createElement('dt'); dt.textContent = g.term;
     const dd = document.createElement('dd'); dd.textContent = g.meaning;
     dl.appendChild(dt); dl.appendChild(dd);
