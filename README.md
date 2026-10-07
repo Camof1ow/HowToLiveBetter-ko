@@ -14,7 +14,7 @@
 [![온라인 검색](https://img.shields.io/badge/%EC%98%A8%EB%9D%BC%EC%9D%B8_%EA%B2%80%EC%83%89-%EC%97%B4%EA%B8%B0-3451b2?style=flat-square)](https://camof1ow.github.io/HowToLiveBetter-ko/)
 [![항목](https://img.shields.io/badge/%ED%95%AD%EB%AA%A9-241%EC%A1%B0-18794e?style=flat-square)](#목차)
 [![증거 등급](https://img.shields.io/badge/%EC%A6%9D%EA%B1%B0_%EB%93%B1%EA%B8%89-A114%C2%B7B109%C2%B7C18-915930?style=flat-square)](#증거-등급)
-[![원문헌](https://img.shields.io/badge/1%EC%B0%A8_%EB%AC%B8%ED%97%8C-500%EA%B0%9C-565a5f?style=flat-square)](docs/核实记录/)
+[![원문헌](https://img.shields.io/badge/1%EC%B0%A8_%EB%AC%B8%ED%97%8C-515%EA%B0%9C-565a5f?style=flat-square)](docs/核实记录/)
 [![라이선스](https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-CC%20BY%204.0-565a5f?style=flat-square)](#라이선스)
 [![Claude Code 보조 작성](https://img.shields.io/badge/Claude%20Code-%E5%8D%8F%E5%8A%A9%E7%BC%96%E5%86%99-D97757?style=flat-square&logo=claude&logoColor=white)](https://claude.com/claude-code)
 
@@ -306,7 +306,7 @@ A급은 '구체 숫자가 있고 출처를 확인할 수 있다'만 말하지, �
 
 - 출처 표기: 원작 '高性价比人生指南', 저장소 링크 https://github.com/eternity4719/HowToLiveBetter 첨부. 이 한국어 발췌판도 함께 명시.
 - 라이선스 링크 https://creativecommons.org/licenses/by/4.0/ 첨부.
-- 내용을 고쳤으면 고쳤다고 명시. **이 저장소의 변경**: 34절 중 제도 무관 11절 241항만 발췌 한국어 번역, 23절 미수록(한국 기준 재작성 예정), 중국 제도 항목 `[C]`·중국 생활환경 전제 항목 `[W]` 표시, 파일명 한국어화, 원작 배포물 링크·후원·광고부 삭제, 검색 페이지 fork 기준화(2026-10-07 동기화본 기준).
+- 내용을 고쳤으면 고쳤다고 명시. **이 저장소의 변경**: 34절 중 제도 무관 11절 241항만 발췌 한국어 번역, 23절 미수록(한국 기준 재작성 예정), 중국 제도 항목 `[C]`·중국 생활환경 전제 항목 `[W]` 표시 후 한국 법령·통계로 지역화 진행(c-base 대비 `[W]` 3건·`[C]` 42건 완료, 잔여 `[C]` 40건 — 원문 확인 불가·한국 대응 법령 없음 사유 명시), 원작 배포물 링크·후원·광고부 삭제, 검색 페이지 fork 기준화(2026-10-07 동기화본 기준).
 
 코드는 [MIT](LICENSE-CODE)이고, 범위는 tools/, skills/, index.html, .github/다.
 
