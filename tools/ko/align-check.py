@@ -35,7 +35,7 @@ def check(ch):
     if orig is None: return f"SKIP {p} no baseline"
     tr = open(p, encoding="utf-8").read()
     if not re.search(r"쉬운 말|비용|혜택", tr): return f"PENDING {p}"
-    head = git_show("c-base", p) or orig
+    head = git_show("c-base", p.replace("-kr", "")) or orig
     hm = {n: bool(re.search(r"\[C\]|\[W\]", m)) for n, m in re.findall(r"^### (\d+)\. (.*)$", head, re.M)}
     o, t = parse(orig), parse(tr)
     issues = []
