@@ -12,7 +12,7 @@ grep -noP "$XRE" book/*.md || true
 D=$(grep -hoP "$XRE" book/*.md | wc -l); echo "dangling_hits=$D"
 
 echo "== 마크 대장 (c-base 대비 감소분 = 지역화 완료)"
-C=$(grep -rho '\[C\]\*\*' book/ | wc -l); W=$(grep -rho '\[W\]\*\*' book/ | wc -l)
+NB=$(ls book/*.md | grep -v -- '-kr.md'); C=$(cat $NB | grep -c '\[C\]\*\*'); W=$(cat $NB | grep -c '\[W\]\*\*')
 echo "C_now=$C W_now=$W"
 
 echo "== 등급 분포 (변형 라벨 주의: 'B (...' 포함)"
