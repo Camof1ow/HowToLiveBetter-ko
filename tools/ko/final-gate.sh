@@ -3,7 +3,7 @@ set -uo pipefail
 cd "/c/Users/astk1/IdeaProjects/HowToLiveBetter-ko" || { echo "FATAL: cd 실패 — Git Bash로 실행 중인가?" >&2; exit 1; }
 n=$(ls book/*.md 2>/dev/null | grep -vc -- "-kr.md")
 [ "$n" -eq 11 ] || { echo "FATAL: book 비-kr = $n (11 기대) — 게이트 무효" >&2; exit 1; }
-PY="${PY:-python}"
+PY="${PY:-}"; [ -n "$PY" ] && "$PY" -c "" 2>/dev/null || PY=""; if [ -z "$PY" ]; then for c in "C:/Users/astk1/AppData/Local/Programs/Python/Python310/python.exe" "/c/Users/astk1/AppData/Local/Programs/Python/Python310/python.exe" python py python3; do if "$c" -c "" 2>/dev/null; then PY="$c"; break; fi; done; fi
 command -v "$PY" >/dev/null || { echo "FATAL: python 없음 (PY 변수로 지정 가능)" >&2; exit 1; }
 
 XRE="제(5|6|7|8|9|10|11|12|15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)절 [0-9]+항"
@@ -19,7 +19,7 @@ echo "== 등급 분포 (변형 라벨 주의: 'B (...' 포함)"
 grep -h '^- 증거 등급:' book/*.md | sort | uniq -c || echo "GRADE-GREP-FAIL"
 
 echo "== 항목 수 (241 = PASS)"
-E=$(cat book/*.md | grep -c '^### '); echo "entries=$E"
+E=$(cat $(ls book/*.md | grep -v -- '-kr.md') | grep -c '^### '); echo "entries=$E"
 
 echo "== parse-test (SEAM+TOTAL)"
 PT=$(node "tools/ko/parse-test.mjs" 2>&1 | grep -E "^SEAM|^TOTAL" || true)
