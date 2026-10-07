@@ -3,7 +3,7 @@ os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 CHAPS = ["01-不要早死","02-不要慢慢死","03-不要浪费精力","04-不要浪费时间",
          "13-紧急情况","14-账号与信息安全","20-刚出生的孩子怎么带","22-怎么放松",
          "28-别为了外形把身体搞坏","30-上学以后的孩子","34-家里的常备药别吃出事"]
-ENTRY = re.compile(r"^### (\d+)\. (.+)$", re.M)
+ENTRY = re.compile(r"^### (?:(\d+)\.)?(\d+)\. (.+)$", re.M)
 TAG = re.compile(r"^\x3c!-- 成本标签:.*?--\>", re.M)
 GRADE = re.compile(r"(?:证据等级|증거 등급)\s*[:：]\s*([ABC])")
 NOTE = re.compile(r"^- (?:备注|비고)\s*[:：](.*)$", re.M)
@@ -16,7 +16,7 @@ def git_show(n, path):
     return r.stdout if r.returncode==0 else None
 
 def parse(text):
-    pos = [(m.start(), m.group(1)) for m in ENTRY.finditer(text)]
+    pos = [(m.start(), m.group(2)) for m in ENTRY.finditer(text)]
     ents = {}
     for i,(s,n) in enumerate(pos):
         e = pos[i+1][0] if i+1 < len(pos) else len(text)
@@ -28,15 +28,16 @@ def parse(text):
                    "note": nm.group(1).strip() if nm else None}
     return ents
 
-KO={"01-不要早死":"01-이르게-죽지-마라-kr-kr","02-不要慢慢死":"02-천천히-죽어가면-안-된다-kr-kr","03-不要浪费精力":"03-에너지-낭비하지-않기-kr-kr","04-不要浪费时间":"04-시간-낭비하지-말라-kr-kr","13-紧急情况":"13-긴급-상황-먼저-할-일-kr-kr","14-账号与信息安全":"14-계정과-정보-보안-kr-kr","20-刚出生的孩子怎么带":"20-갓-태어난-아기-돌보기-kr-kr","22-怎么放松":"22-긴장-푸는-법-kr-kr","28-别为了外形把身体搞坏":"28-외모-때문에-몸-망치지-마라-kr-kr","30-上学以后的孩子":"30-학교에-들어간-뒤의-아이-kr-kr","34-家里的常备药别吃出事":"34-집-상비약-먹다가-탈-안-나게-kr-kr"}
+KO={"01-不要早死":"제01장-이르게-죽지-마라-kr","02-不要慢慢死":"제02장-천천히-죽어가면-안-된다-kr","03-不要浪费精力":"제03장-에너지-낭비하지-않기-kr","04-不要浪费时间":"제04장-시간-낭비하지-말라-kr","13-紧急情况":"제13장-긴급-상황-먼저-할-일-kr","14-账号与信息安全":"제14장-계정과-정보-보안-kr","20-刚出生的孩子怎么带":"제20장-갓-태어난-아기-돌보기-kr","22-怎么放松":"제22장-긴장-푸는-법-kr","28-别为了外形把身体搞坏":"제28장-외모-때문에-몸-망치지-마라-kr","30-上学以后的孩子":"제30장-학교에-들어간-뒤의-아이-kr","34-家里的常备药别吃出事":"제34장-집-상비약-먹다가-탈-안-나게-kr"}
 def check(ch):
     p = f"book/{KO.get(ch, ch)}.md"
     orig = git_show("base-zh", f"book/{ch}.md")
     if orig is None: return f"SKIP {p} no baseline"
     tr = open(p, encoding="utf-8").read()
     if not re.search(r"쉬운 말|비용|혜택", tr): return f"PENDING {p}"
-    head = git_show("c-base", p.replace("-kr", "")) or orig
-    hm = {n: bool(re.search(r"\[C\]|\[W\]", m)) for n, m in re.findall(r"^### (\d+)\. (.*)$", head, re.M)}
+    c_base_path = re.sub(r"book/제(\d+)장-", r"book/\1-", p).replace("-kr", "")
+    head = git_show("c-base", c_base_path) or orig
+    hm = {m[1]: bool(re.search(r"\[C\]|\[W\]", m[2])) for m in re.findall(r"^### (?:(\d+)\.)?(\d+)\. (.*)$", head, re.M)}
     o, t = parse(orig), parse(tr)
     issues = []
     infos = []
@@ -47,7 +48,7 @@ def check(ch):
     zh_fields = len(re.findall(r"^- (?:成本|说人话|收益|证据等级|来源|备注)：", tr, re.M))
     if zh_fields:
         issues.append(f"UNTRANSLATED field lines={zh_fields}")
-    zh_heads = [h for h in re.findall(r"^### \d+\. (.+)$", tr, re.M)
+    zh_heads = [h for h in re.findall(r"^### (?:\d+\.)?\d+\. (.+)$", tr, re.M)
                 if re.search(r"[\u4e00-\u9fff]", re.sub(r"[(（「『'\"《][^()（）「」『』'\"》]*[)）」』'\"》]", "", h))]
     if zh_heads:
         issues.append(f"UNTRANSLATED headings={len(zh_heads)}: {zh_heads[:3]}")

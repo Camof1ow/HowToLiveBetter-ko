@@ -7,7 +7,7 @@ KR=$(ls book/*-kr.md 2>/dev/null | wc -l)
 PY="/c/Users/astk1/AppData/Local/Programs/Python/Python310/python.exe"
 [ -x "$PY" ] || { echo "FATAL: python 없음"; exit 1; }
 
-XRE="제(5|6|7|8|9|10|11|12|15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)절 [0-9]+항"
+XRE="제(5|6|7|8|9|10|11|12|15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)절|(?:(?<!\d))(5|6|7|8|9|10|11|12|15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)\.[0-9]+ 항목|(?:(?<!\d))(5|6|7|8|9|10|11|12|15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)장\b"
 echo "== dangling 잔존 (_kr, 0 = PASS)"
 grep -noP "$XRE" book/*-kr.md || true
 D=$(grep -hoP "$XRE" book/*-kr.md | wc -l); echo "dangling_hits=$D"

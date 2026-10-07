@@ -1,13 +1,13 @@
 import re, sys, os, json
 os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 TAG = re.compile(r"^\x3c!-- 成本标签:.*?--\>", re.M)
-ENTRY = re.compile(r"^### (\d+)\. (.+)$", re.M)
+ENTRY = re.compile(r"^### (?:(\d+)\.)?(\d+)\. (.+)$", re.M)
 URL = re.compile(r"https?://[^\s)>\]\"，。;、（）(]+")
 
 def taglist(t): return TAG.findall(t)
-def entries(t): return [(m.group(1), m.group(2).replace(" **[C]**","").replace(" **[W]**","").strip()) for m in ENTRY.finditer(t)]
+def entries(t): return [(m.group(2), m.group(3).replace(" **[C]**","").replace(" **[W]**","").strip()) for m in ENTRY.finditer(t)]
 def urlmap(t):
-    pos = [(m.start(), m.group(1)) for m in ENTRY.finditer(t)]
+    pos = [(m.start(), m.group(2)) for m in ENTRY.finditer(t)]
     out = {}
     for i,(s,n) in enumerate(pos):
         e = pos[i+1][0] if i+1 < len(pos) else len(t)
@@ -26,14 +26,14 @@ def check(orig_path, kr_path):
     if [n for n,_ in entries(o)] != [n for n,_ in entries(k)]: iss.append("entry number drift")
     if len(entries(o)) != len(entries(k)): iss.append(f"entry count {len(entries(o))}->{len(entries(k))}")
     if len(re.findall(r"^- (?:成本|说人话|收益|证据等级|来源|备注)：", k, re.M)): iss.append("zh-label lines")
-    zh_heads = [h for h in re.findall(r"^### \d+\. (.+)$", k, re.M)
+    zh_heads = [h for h in re.findall(r"^### (?:\d+\.)?\d+\. (.+)$", k, re.M)
                 if re.search(r"[\u4e00-\u9fff]", re.sub(r"[(（「『'\"《][^()（）「」『』'\"》]*[)）」』'\"》]", "", h))]
     if zh_heads: iss.append(f"zh-headings {zh_heads[:2]}")
     if len(re.findall(r"^#{1,2} ", k, re.M)) != 1: iss.append("H1/H2 count != 1")
     # URL 불변: [C] 마크가 남아있거나(미해결=보존 대상), 원본에서 제거된 게 아닌 한 동일해야 함
     ou, ku = urlmap(o), urlmap(k)
-    oc = dict((n, ("[C]" in h or "[W]" in h)) for n, h in re.findall(r"^### (\d+)\. (.*)$", o, re.M))
-    kc = dict((n, ("[C]" in h or "[W]" in h)) for n, h in re.findall(r"^### (\d+)\. (.*)$", k, re.M))
+    oc = dict((m[1], ("[C]" in m[2] or "[W]" in m[2])) for m in re.findall(r"^### (?:(\d+)\.)?(\d+)\. (.*)$", o, re.M))
+    kc = dict((m[1], ("[C]" in m[2] or "[W]" in m[2])) for m in re.findall(r"^### (?:(\d+)\.)?(\d+)\. (.*)$", k, re.M))
     viol = []
     for n in set(ou) & set(ku):
         if ou[n] != ku[n] and not oc.get(n) and not _drf_added(ou[n], ku[n]):
@@ -45,7 +45,7 @@ def check(orig_path, kr_path):
     bad = []
     for i in range(len(pos) - 1):
         seg = k[pos[i]:pos[i+1]]
-        head = ENTRY.findall(k)[i] if i < len(ENTRY.findall(k)) else ("?", "")
+        head = [(m.group(2), m.group(3)) for m in ENTRY.finditer(k)][i] if i < len(pos) - 1 else ("?", "")
         labs = set(re.findall(r"^- (비용|쉬운 말|혜택|증거 등급|출처|비고)[:：]", seg, re.M))
         missing = {"비용","쉬운 말","혜택","증거 등급","출처","비고"} - labs
         if missing or not re.search(r"^- 증거 등급[:：]\s*[ABC]", seg, re.M):
