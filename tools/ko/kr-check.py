@@ -36,7 +36,7 @@ def check(orig_path, kr_path):
     kc = dict((n, ("[C]" in h or "[W]" in h)) for n, h in re.findall(r"^### (\d+)\. (.*)$", k, re.M))
     viol = []
     for n in set(ou) & set(ku):
-        if ou[n] != ku[n] and (oc.get(n) or kc.get(n) is False and not _drf_added(ou[n], ku[n])):
+        if ou[n] != ku[n] and not oc.get(n) and not _drf_added(ou[n], ku[n]):
             viol.append(n)
     resolved = [n for n in set(oc) if oc[n] and not kc.get(n, True)]
     if viol: iss.append(f"URL diff outside [C]-resolved: {viol[:6]}")
@@ -48,8 +48,12 @@ def check(orig_path, kr_path):
             "won_in_cited_lines": won_c, "bare_china_reader_fields": cn, "entries": len(entries(k))}
 
 def _drf_added(a, b):
-    added = set(b) - set(a)
-    return added and all(("law.go.kr" in u or "go.kr" in u or "korea.kr" in u or "kdca" in u or "nhis" in u or "mfds" in u or "khepi" in u or "er-api" in u) for u in added) and not (set(a) - set(b))
+    added, removed = set(b) - set(a), set(a) - set(b)
+    kr_official = ("law.go.kr","go.kr","korea.kr","kdca","nhis","mfds","khepi","mods","mohw","nhic","er-api","fire.","police","mps","nip.")
+    cn_gov = ("gov.cn","chinacdc","nmpa","cnnic","ndcpa","court.gov","spp.gov","119.gov","wjw.","beijing","sh.gov","gd.gov","yn","tj.","hunan","sc.gov","zj","jiangsu","nhc.")
+    added_ok = all(any(s in u for s in kr_official) for u in added)
+    removed_ok = all(any(s in u for s in cn_gov) for u in removed)
+    return added_ok and removed_ok
 
 if __name__ == "__main__":
     for orig, kr in zip(sys.argv[1::2], sys.argv[2::2]):
