@@ -3,11 +3,11 @@ set -uo pipefail
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$REPO" || { echo "FATAL: cd 실패" >&2; exit 1; }
 KR=$(ls book/*-kr.md 2>/dev/null | wc -l)
-[ "$KR" -eq 19 ] || { echo "FATAL: *-kr.md = $KR (19 기대)"; exit 1; }
+[ "$KR" -eq 20 ] || { echo "FATAL: *-kr.md = $KR (20 기대)"; exit 1; }
 PY="/c/Users/astk1/AppData/Local/Programs/Python/Python310/python.exe"
 [ -x "$PY" ] || { echo "FATAL: python 없음"; exit 1; }
 
-XRE="제(15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)절|(?:(?<!\d))(15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)\.[0-9]+ 항목|(?:(?<!\d))(15|16|17|18|19|21|23|24|25|26|27|29|31|32|33)장\b"
+XRE="제(16|17|18|19|21|23|24|25|26|27|29|31|32|33)절|(?:(?<!\d))(16|17|18|19|21|23|24|25|26|27|29|31|32|33)\.[0-9]+ 항목|(?:(?<!\d))(16|17|18|19|21|23|24|25|26|27|29|31|32|33)장\b"
 echo "== dangling 잔존 (_kr, 0 = PASS)"
 grep -noP "$XRE" book/*-kr.md || true
 D=$(grep -hoP "$XRE" book/*-kr.md | wc -l); echo "dangling_hits=$D"
@@ -66,8 +66,8 @@ echo "== 용어 고아"
 "$PY" -X utf8 tools/ko/gloss-orphan.py | grep -v ORPHAN || true
 
 echo "== SUMMARY"
-if [ "$D" -eq 0 ] && [ "$E" -eq 474 ] && [ "$S" -eq 1 ] && [ "$OKC" -eq "$KR" ]  && [ "$KRF" -eq 0 ] && [ "$KRN" -eq 19 ]; then
-  echo "PASS (dangling0·474·SEAM·align$KR·URL0·krcheck19·gr-0)"
+if [ "$D" -eq 0 ] && [ "$E" -eq 483 ] && [ "$S" -eq 1 ] && [ "$OKC" -eq "$KR" ]  && [ "$KRF" -eq 0 ] && [ "$KRN" -eq 20 ]; then
+  echo "PASS (dangling0·483·SEAM·align$KR·URL0·krcheck20·gr-0)"
 else
   echo "CHECK: D=$D E=$E S=$S align=$OKC/$KR  krF=$KRF krN=$KRN"
 fi
